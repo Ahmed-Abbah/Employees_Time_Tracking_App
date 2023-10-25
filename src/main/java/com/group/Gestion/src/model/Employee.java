@@ -2,13 +2,11 @@ package com.group.Gestion.src.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.List;
 
-
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -28,7 +26,11 @@ public class Employee {
 
     private String password;
 
+    private String role;
+
     @OneToMany(mappedBy = "employee",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<WorkTime> workTimes;
 
+    public Employee(Employee employee) {
+    }
 }
