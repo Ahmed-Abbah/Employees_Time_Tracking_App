@@ -1,17 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/welcome.css">
     <title>Document</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/auth/login}">
-    <input type="text" name="username">
-    <input type="password" name="password">
-    <input type="submit">
-</form>
+<section>
+    <header>
+        <a href="#" class="Logo"> <img src="/images/Logo.svg" alt="logo"> </a>
+        <ul>
+            <li><a href="#">my information</a></li>
+            <li><a href="#">log out</a></li>
+        </ul>
+    </header>
+    <div class="content">
+        <div class="textBox">
+            <h2>Welcome <span>Hajar</span> </h2>
+            <p> Good morning, team! Wishing you all a fantastic day ahead. <br> Make it a productive and positive one!</p>
+            <img src="/images/manage1.jpg" alt="">
+        </div>
+
+        <div class="GestionBox">
+            <div class="work">
+                <a href="#">Start Work</a>
+                <a href="#">End Work</a>
+            </div>
+            <div class="pause">
+                <a id="startButton" style="cursor: pointer;">Start Pause</a>
+                <a id="stopButton" style="cursor: pointer;">End Pause</a>
+            </div>
+            <div class="chronometer">
+                <span id="timer">00:00:00</span>
+            </div>
+        </div>
+    </div>
+</section>
 </body>
+<script type="text/javascript" src="/js/script.js"></script>
 </html>
