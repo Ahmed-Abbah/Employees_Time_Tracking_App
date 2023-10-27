@@ -1,6 +1,11 @@
 package com.group.Gestion.src.security;
 
 
+import com.group.Gestion.src.DTOs.LoginResponseDto;
+import com.group.Gestion.src.model.Employee;
+import com.group.Gestion.src.service.AuthenticationService;
+import com.group.Gestion.src.service.EmployeeService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,13 +27,27 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/auth")
+@CrossOrigin("*")
 public class SecurityController {
+    private AuthenticationService authenticationService;
     private JwtEncoder jwtEncoder;
-    private AuthenticationManager authenticationManager;
+
+    public static boolean isUserAuthenticated(HttpSession http){
+        if(http.getAttribute("loggedEmployee")!=null){
+            return true;
+        }
+        return false;
+    }
+
+    @PostMapping("/register")
+    public String registerEmployee(@RequestParam String  email,@RequestParam String  password,@RequestParam String  firstName,@RequestParam String  lastName){
+        authenticationService.registerUser(email,password,firstName,lastName);
+        return "redirect:/auth/login";
+    }
     @Autowired
-    public SecurityController(AuthenticationManager authenticationManager,JwtEncoder jwtEncoder) {
-        this.authenticationManager = authenticationManager;
+    public SecurityController(JwtEncoder jwtEncoder,AuthenticationService authenticationService) {
         this.jwtEncoder=jwtEncoder;
+        this.authenticationService=authenticationService;
     }
 
 
@@ -38,32 +57,36 @@ public class SecurityController {
         return authentication;
     }
 
-
-
     @PostMapping("/login")
-    public Map<String, String> login(@RequestParam("username") String username,@RequestParam("password") String password){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username,password)
-        );
-        Instant instant=Instant.now();
-        String scope = authentication.getAuthorities().stream().map(a->a.getAuthority()).collect(Collectors.joining(" "));
-        JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
-                .issuedAt(instant)
-                .expiresAt(instant.plus(10, ChronoUnit.MINUTES))
-                .subject(username)
-                .claim("scope",scope)
-                .build();
-        JwtEncoderParameters jwtEncoderParameters =
-                JwtEncoderParameters.from(
-                        JwsHeader.with(MacAlgorithm.HS512).build(),
-                        jwtClaimsSet
-                );
-        String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
-        return Map.of("access-token", jwt);
+    public String loginUser(@RequestParam("email") String username, @RequestParam("password") String password,HttpSession http){
+        if(SecurityController.isUserAuthenticated(http)){
+            return "redirect:/employee/welcome";
+        }else{
+            if(authenticationService.loginEmployee(username,password).getJwt().isEmpty()){
+                System.out.println("Sorry we can't log you In with the email & password you entered  [EMAIL]="+username);
+                return "redirect:/auth/login";
+            }else{
+                Employee loggedEmployee = authenticationService.loginEmployee(username,password).getEmployee();
+                String jwtToken = authenticationService.loginEmployee(username,password).getJwt();
+                http.setAttribute("loggedEmployee",loggedEmployee);
+                System.out.println("YOU ARE LOGGED IN AS: "+ loggedEmployee.getEmail() + " | And you jwt token is: "+jwtToken);
+                return "redirect:/employee/welcome";
+            }
+        }
+
+    }
+    @GetMapping("/login")
+    public String showLoginPage(){
+        return "login";
     }
 
-    @GetMapping("/prelogin")
-    public String prelogin(){
-        return "welcome";
+    @GetMapping("/logout")
+    public String logout(HttpSession http){
+        http.invalidate();
+        return "redirect:/auth/login";
+    }
+    @GetMapping("/register")
+    public String register(){
+        return "redirect:/auth/login";
     }
 }

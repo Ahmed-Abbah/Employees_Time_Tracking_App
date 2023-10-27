@@ -1,43 +1,48 @@
 package com.group.Gestion.src.security;
 
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import org.springframework.beans.factory.annotation.Value;
+import com.group.Gestion.src.utilities.RSAKeyProperties;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
 
-import javax.crypto.spec.SecretKeySpec;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Value("${jwt.secret}")
-    private String secretKey;
+    private final RSAKeyProperties keys;
 
-    @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
-        PasswordEncoder passwordEncoder = passwordEncoder();
-        return new InMemoryUserDetailsManager(
-                User.withUsername("user1").password(passwordEncoder.encode("12345")).authorities("USER").build(),
-                User.withUsername("admin").password(passwordEncoder.encode("12345")).authorities("USER","ADMIN").build()
-        );
+
+    @Autowired
+    public SecurityConfig(RSAKeyProperties keys) {
+        this.keys = keys;
     }
 
     @Bean
@@ -46,33 +51,53 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(ar->ar.requestMatchers("/auth/login","/auth/prelogin","/auth/**").permitAll())
-                .csrf(csrf->csrf.disable())
-                .authorizeHttpRequests(ar->ar.anyRequest().authenticated())
-                .oauth2ResourceServer(oa->oa.jwt(Customizer.withDefaults()))
-                .build();
+    public AuthenticationManager authManager(UserDetailsService detailsService){
+        DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
+        daoProvider.setUserDetailsService(detailsService);
+        daoProvider.setPasswordEncoder(passwordEncoder());
+        return new ProviderManager(daoProvider);
     }
 
     @Bean
-    JwtEncoder jwtEncoder(){
-        return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey.getBytes()));
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> {
+//                    auth.requestMatchers("/auth/**","/css/**", "/js/**", "/images/**").permitAll();
+//                    auth.requestMatchers("/employee/**").hasRole("USER");
+//                    auth.requestMatchers("/admin/**").hasAnyRole("ADMIN", "USER");
+//                    auth.anyRequest().authenticated();
+                    auth.requestMatchers("**").permitAll();
+
+                });
+
+        http.sessionManagement(
+                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
+
+        return http.build();
     }
 
     @Bean
-    JwtDecoder jwtDecoder(){
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(),"RSA");
-        return NimbusJwtDecoder.withSecretKey((secretKeySpec)).macAlgorithm(MacAlgorithm.HS512).build();
+    public JwtDecoder jwtDecoder(){
+        return NimbusJwtDecoder.withPublicKey(keys.getPublicKey()).build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService){
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        return new ProviderManager(daoAuthenticationProvider);
+    public JwtEncoder jwtEncoder(){
+        JWK jwk = new RSAKey.Builder(keys.getPublicKey()).privateKey(keys.getPrivateKey()).build();
+        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(jwks);
+    }
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter(){
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+        jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        return jwtConverter;
     }
 
 
