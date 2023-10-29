@@ -48,7 +48,14 @@ public class EmployeeController {
         return "welcome";
     }
 
+    @GetMapping("/admin/employees")
+    public  String listEmployee(){
+        return "ListEmployee";
+    }
 
-
+    @GetMapping("/admin/rapport")
+    public  String RapportEmployee(){
+        return "rapport";
+    }
 
 }
