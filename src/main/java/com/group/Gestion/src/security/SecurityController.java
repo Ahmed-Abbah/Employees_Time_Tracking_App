@@ -1,29 +1,14 @@
 package com.group.Gestion.src.security;
 
 
-import com.group.Gestion.src.DTOs.LoginResponseDto;
 import com.group.Gestion.src.model.Employee;
 import com.group.Gestion.src.service.AuthenticationService;
-import com.group.Gestion.src.service.EmployeeService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/auth")
@@ -33,7 +18,7 @@ public class SecurityController {
     private JwtEncoder jwtEncoder;
 
     public static boolean isUserAuthenticated(HttpSession http){
-        if(http.getAttribute("loggedEmployee")!=null){
+        if(http.getAttribute("loggedInEmployee")!=null){
             return true;
         }
         return false;
@@ -68,8 +53,9 @@ public class SecurityController {
             }else{
                 Employee loggedEmployee = authenticationService.loginEmployee(username,password).getEmployee();
                 String jwtToken = authenticationService.loginEmployee(username,password).getJwt();
-                http.setAttribute("loggedEmployee",loggedEmployee);
-                System.out.println("YOU ARE LOGGED IN AS: "+ loggedEmployee.getEmail() + " | And you jwt token is: "+jwtToken);
+                http.setAttribute("loggedInEmployee",loggedEmployee);
+                System.out.println("User with email : "+ loggedEmployee.getEmail() + " has logged in . \nJWT Token : "+jwtToken);
+                System.out.println(loggedEmployee.toString());
                 return "redirect:/employee/welcome";
             }
         }
@@ -85,8 +71,10 @@ public class SecurityController {
         http.invalidate();
         return "redirect:/auth/login";
     }
+
     @GetMapping("/register")
-    public String register(){
-        return "redirect:/auth/login";
+    public String showRegisterPage(){
+        return "register";
     }
+
 }

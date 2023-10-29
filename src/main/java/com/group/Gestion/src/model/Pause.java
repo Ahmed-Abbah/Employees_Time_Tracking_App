@@ -1,28 +1,24 @@
 package com.group.Gestion.src.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
+@Builder
 public class Pause {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private Date startTime;
+    private String startTime;
 
-    private Date endTime;
+    private String endTime;
 
     @ManyToOne()
-    @JoinColumn(name="work_time_id",nullable = false)
-    private WorkTime workTime;
+    @JoinColumn(name = "workDay_id",nullable = false)
+    private WorkDay workDay;
 
 }

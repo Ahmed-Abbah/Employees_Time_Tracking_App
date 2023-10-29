@@ -1,12 +1,8 @@
 package com.group.Gestion.src.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
@@ -14,22 +10,26 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class WorkTime {
+@Builder
+@Table(
+        uniqueConstraints = @UniqueConstraint(columnNames = {"employee_id", "date"})
+)
+public class WorkDay {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    private Date date;
+    private String date;
 
-    private Date startTime;
+    private String startTime;
 
-    private Date endTime;
+    private String endTime;
 
     @ManyToOne()
     @JoinColumn(name = "employee_id",nullable = false)
     private Employee employee;
 
-    @OneToMany(mappedBy = "workTime",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "workDay",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Pause> pauses ;
 
 }

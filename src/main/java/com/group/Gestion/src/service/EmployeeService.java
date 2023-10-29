@@ -1,8 +1,8 @@
 package com.group.Gestion.src.service;
 
 import com.group.Gestion.src.model.Employee;
-import com.group.Gestion.src.model.Role;
 import com.group.Gestion.src.repository.EmployeeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,12 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.beans.Encoder;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 @Service
+@Transactional
 public class EmployeeService implements UserDetailsService{
     private EmployeeRepository employeeRepository;
     private PasswordEncoder encoder;
@@ -41,6 +37,14 @@ public class EmployeeService implements UserDetailsService{
 //                .build();
 
         return employeeRepository.findByEmail(username).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
+    }
+
+    public Employee findEmployeeById(long id) {
+       return this.employeeRepository.findEmployeeById(id);
+    }
+
+    public Employee save(Employee employee){
+        return this.employeeRepository.save(employee);
     }
 
 //    @Override
