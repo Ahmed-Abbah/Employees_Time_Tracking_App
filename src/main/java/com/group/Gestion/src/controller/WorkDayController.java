@@ -63,8 +63,9 @@ public class WorkDayController {
         workDay.setEndTime(DateTimeProvider.getCurrentTime());
         workDay.setEmployee(employee);
         this.workDayService.save(workDay);
+        Employee employee1 = employeeService.findEmployeeById(employee.getId());
         employee.setStatus(Status.DEHORS);
-        this.employeeService.save(employee);
+        this.employeeService.save(employee1);
         return "redirect:/employee/welcome";
     }
 }

@@ -39,9 +39,7 @@ public class EmployeeController {
                 http.setAttribute("loggedInEmployee",employee);
             }else{
                 if(workDay.getEndTime()!=null){
-                    if(workDay.getEndTime()!=""){
                         http.setAttribute("workDayHasEnded",true);
-                    }
                 }
             }
         }catch(Exception e){
