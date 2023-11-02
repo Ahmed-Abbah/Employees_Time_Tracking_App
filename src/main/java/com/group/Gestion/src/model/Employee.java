@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -111,7 +112,7 @@ public class Employee implements UserDetails {
     }
 
     public boolean isStatusDehors(){
-        if(this.status == Status.DEHORS ||this.status==null){
+        if(this.status == Status.DEHORS||this.status==null){
             return true;
         }
         return false;
@@ -129,6 +130,27 @@ public class Employee implements UserDetails {
         }
         return false;
     }
+
+    public List<Pause> getTodayPauses() {
+
+        return this.getWorkDays().stream()
+                .filter(workDay -> workDay.getDate().equals(DateTimeProvider.getCurrentDate()))
+                .flatMap(workDay -> workDay.getPauses().stream())
+                .filter(pause -> pause.getEndTime() != null)
+                .collect(Collectors.toList());
+    }
+
+
+    public WorkDay getTodayWorkDay(){
+        for(WorkDay workDay : this.getWorkDays()){
+            if(workDay.getDate().equals(DateTimeProvider.getCurrentDate())){
+                return workDay;
+            }
+        }
+        return null;
+    }
+
+
 
 
 

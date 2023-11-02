@@ -39,13 +39,67 @@
             </div>
             <div class="chronometer">
                 <span id="timer">00:00:00</span>
+
             </div>
+            <br><br>
+
         </div>
 
+        <style>
+            .pauseTable {
+                width:50%;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .pauseTable th, .pauseTable td {
+                border: 1px solid #69c46d;
+                padding: 12px;
+                text-align: center;
+            }
+            .pauseTable th {
+                background-color: #68c074;
+                color: white;
+            }
+            .pauseTable tr:nth-child(even) {
+                background-color: #ffffff;
+            }
+            .pauseTable tr:nth-child(odd) {
+                background-color: #f2f2f2;
+            }
+        </style>
 
-        <div th:if="${session.workDayHasEnded}" class="GestionBox">
-            <span>You are done today, Come Back tomorrow.</span>
+
+
+
+
+
+
+        <div th:if="${session.workDayHasEnded}" class="GestionBox" style="background-color: #f2f2f2; padding: 20px; border-radius: 10px;width: 45%;">
+            <span style="font-size: 18px; font-weight: bold;">You are done today, Come Back tomorrow.</span>
+            <br>
+            <span style="font-size: 14px;">Here is a breakdown of your timeline today :</span><br>
+            <span th:text="'You started your work day at: ' + ${session.loggedInEmployee.getTodayWorkDay().getStartTime()} + ' AM'" style="font-size: 14px;"></span><br>
+            <span th:text="'You ended your work day at: ' + ${session.loggedInEmployee.getTodayWorkDay().getEndTime()} + ' AM'" style="font-size: 14px;"></span><br>
+
+            <table class="pauseTable" th:if="${session.loggedInEmployee.getTodayWorkDay().getPauses().size()!=0}" style="margin-top: 20px; width: 100%;">
+                <tr>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Total Pause Time</th>
+                </tr>
+
+                <tr th:each="pause : ${session.loggedInEmployee.getTodayWorkDay().getPauses()}" style="border-top: 1px solid #ddd;">
+                    <td th:text="${pause.getWorkDay().getDate() + '-' + pause.getWorkDay().getDayOfWeekName(pause.getWorkDay().getDate())}" style="font-size: 14px;"></td>
+                    <td th:text="${pause.getStartTime()}" style="font-size: 14px;"></td>
+                    <td th:text="${pause.getEndTime()}" style="font-size: 14px;"></td>
+                    <td th:text="${pause.getTotalPauseTimeInMinutes()}" style="font-size: 14px;"></td>
+                </tr>
+            </table>
+
+            <span th:if="${session.loggedInEmployee.getTodayWorkDay().getPauses().isEmpty()}" style="font-size: 14px; margin-top: 20px;">You haven't taken any breaks today.</span>
         </div>
+
     </div>
 </section>
 </body>

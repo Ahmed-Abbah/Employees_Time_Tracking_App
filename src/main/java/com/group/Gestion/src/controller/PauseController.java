@@ -48,8 +48,7 @@ public class PauseController {
                 "\n work day ID is : "+pause.getWorkDay().getId());
         pauseService.save(pause);
         employee.setStatus(Status.EN_PAUSE);
-        this.employeeService.save(employee);
-        http.setAttribute("loggedInEmployee",employee);
+        http.setAttribute("loggedInEmployee",this.employeeService.save(employee,http));
         return "redirect:/employee/welcome";
     }
 
@@ -68,8 +67,7 @@ public class PauseController {
         }
 
         employee.setStatus(Status.EN_TRAVAIL);
-        this.employeeService.save(employee);
-        http.setAttribute("loggedInEmployee",employee);
+        http.setAttribute("loggedInEmployee",this.employeeService.save(employee,http));
         return "redirect:/employee/welcome";
     }
 }

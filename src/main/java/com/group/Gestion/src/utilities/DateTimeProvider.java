@@ -12,7 +12,6 @@ public class DateTimeProvider {
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-
         return currentDate.format(dateFormatter);
     }
     public static String getCurrentTime() {

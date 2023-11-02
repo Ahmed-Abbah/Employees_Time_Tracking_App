@@ -2,6 +2,7 @@ package com.group.Gestion.src.service;
 
 import com.group.Gestion.src.model.Employee;
 import com.group.Gestion.src.repository.EmployeeRepository;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -43,7 +46,8 @@ public class EmployeeService implements UserDetailsService{
        return this.employeeRepository.findEmployeeById(id);
     }
 
-    public Employee save(Employee employee){
+    public Employee save(Employee employee, HttpSession http){
+        http.setAttribute("loggedInEmployee",employee);
         return this.employeeRepository.save(employee);
     }
 
@@ -52,4 +56,9 @@ public class EmployeeService implements UserDetailsService{
 //        Optional<Employee> employee = employeeRepository.findEmployeeByEmail(username);
 //        return employee.map(Employee::new).orElseThrow(()->new UsernameNotFoundException("Email or password is Incorrect ."));
 //    }
+
+
+    public List<Employee> getEmployees(){
+        return employeeRepository.findAll();
+    }
 }

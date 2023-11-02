@@ -59,7 +59,7 @@
     <div class="table-data2">
       <div class="order">
         <div class="head">
-          <h3>Hajar</h3>
+          <h3 th:text="${employee.getFirstName()} +' '+ ${employee.getLastName()}">Hajar</h3>
         </div>
         <table>
           <tr>
@@ -71,50 +71,14 @@
             <th>Number of Breaks</th>
             <th>Break Start and End Dates</th>
           </tr>
-          <tr>
-            <td>Lundi</td>
-            <td>08:00 AM</td>
-            <td>05:00 PM</td>
-            <td>8 heures</td>
-            <td>0 heures</td>
-            <td>2 pauses</td>
-            <td>08:30 AM - 09:00 AM<br>01:00 PM - 01:15 PM</td>
-          </tr>
-          <tr>
-            <td>Mardi</td>
-            <td>09:00 AM</td>
-            <td>04:00 PM</td>
-            <td>7 heures</td>
-            <td>0 heures</td>
-            <td>1 pause</td>
-            <td>09:45 AM - 10:00 AM</td>
-          </tr>
-          <tr>
-            <td>Mercredi</td>
-            <td>08:30 AM</td>
-            <td>04:30 PM</td>
-            <td>8 heures</td>
-            <td>0 heures</td>
-            <td>3 pauses</td>
-            <td>10:15 AM - 10:30 AM<br>01:30 PM - 02:00 PM<br>03:45 PM - 04:00 PM</td>
-          </tr>
-          <tr>
-            <td>Jeudi</td>
-            <td>09:15 AM</td>
-            <td>04:15 PM</td>
-            <td>7 heures</td>
-            <td>0 heures</td>
-            <td>2 pauses</td>
-            <td>09:15 AM - 09:30 AM<br>03:00 PM - 03:15 PM</td>
-          </tr>
-          <tr>
-            <td>Vendredi</td>
-            <td>08:00 AM</td>
-            <td>04:00 PM</td>
-            <td>8 heures</td>
-            <td>0 heures</td>
-            <td>1 pause</td>
-            <td>11:30 AM - 11:45 AM</td>
+          <tr th:each="day : ${employee.getWorkDays()}">
+            <td th:text="${day.getDayOfWeekName(day.getDate())}"></td>
+            <td th:text="${day.getStartTime()}"></td>
+            <td th:text="${day.getEndTime()}"></td>
+            <td th:text="${day.getTotalWorkedTime()}"></td>
+            <td th:text="${day.getTotalExtraTime()}"></td>
+            <td th:text="${day.getPauses().size()}"></td>
+            <td ><p th:each="pause : ${day.getPauses()}" th:text="${pause.getStartTime()}+' - '+${pause.getEndTime()}"></p></td>
           </tr>
         </table>
       </div>

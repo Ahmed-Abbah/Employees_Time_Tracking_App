@@ -13,8 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/workDay")
 public class WorkDayController {
@@ -36,8 +34,6 @@ public class WorkDayController {
 
         Employee employee = (Employee) http.getAttribute("loggedInEmployee");
 
-
-
         WorkDay workDay = WorkDay.builder()
                 .startTime(DateTimeProvider.getCurrentTime())
                 .date(DateTimeProvider.getCurrentDate())
@@ -46,7 +42,7 @@ public class WorkDayController {
         employee.setStatus(Status.EN_TRAVAIL);
         workDay.setEmployee(employee);
         this.workDayService.save(workDay);
-        this.employeeService.save(employee);
+        this.employeeService.save(employee,http);
 
         return "redirect:/employee/welcome";
     }
@@ -62,10 +58,10 @@ public class WorkDayController {
         System.out.println("work day end time : "+workDay.getEndTime()+"\n workday start time : "+workDay.getStartTime());
         workDay.setEndTime(DateTimeProvider.getCurrentTime());
         workDay.setEmployee(employee);
-        this.workDayService.save(workDay);
+        workDayService.save(workDay);
         Employee employee1 = employeeService.findEmployeeById(employee.getId());
-        employee.setStatus(Status.DEHORS);
-        this.employeeService.save(employee1);
+        employee1.setStatus(Status.DEHORS);
+        this.employeeService.save(employee1,http);
         return "redirect:/employee/welcome";
     }
 }

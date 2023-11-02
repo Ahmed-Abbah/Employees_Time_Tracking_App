@@ -24,7 +24,7 @@
     <li class="active">
       <a href="#">
         <i class='bx bxs-dashboard' ></i>
-        <span class="text">Empoyees</span>
+        <span class="text">Employees</span>
       </a>
     </li>
 
@@ -71,17 +71,19 @@
           <tr>
             <th>Fist Name</th>
             <th>Last Name</th>
-            <th>Role</th>
+            <th>Email</th>
             <th>status</th>
             <th></th>
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td>John</td>
-            <td>john</td>
-            <td>Empoyee</td>
-            <td><span class="status completed">working </span></td>
+          <tr th:each="employee : ${employees}">
+            <td th:text="${employee.getFirstName()}"></td>
+            <td th:text="${employee.getLastName()}"></td>
+            <td th:text="${employee.getEmail()}">Employee</td>
+            <td th:if="${employee.isStatusEnTravail()}"><span class="status completed">working ... </span></td>
+            <td th:if="${employee.isStatusEnPause()}"><span class="status process">In a Break</span></td>
+            <td th:if="${employee.isStatusDehors()}"><span class="status pending">Outside</span></td>
           </tr>
           </tbody>
         </table>
