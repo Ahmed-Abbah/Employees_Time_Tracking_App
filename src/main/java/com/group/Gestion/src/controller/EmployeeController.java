@@ -50,6 +50,9 @@ public class EmployeeController {
         }catch(Exception e){
             http.setAttribute("workDayHasEnded",true);
         }
+        if(employee.getEmail().equals("admin@admin.com")){
+            return "redirect:/employee/admin/employeesList";
+        }
         return "welcome";
     }
 
@@ -64,11 +67,13 @@ public class EmployeeController {
 
     @GetMapping("/admin/rapport")
     public  String rapportEmployee(@RequestParam("id") long id,Model model){
-        Employee employee = (Employee) employeeService.findEmployeeById(id);
+        Employee employee = employeeService.findEmployeeById(id);
         try{
+
 //                    while(employee.getWorkDays().size()>8){
 //
 //            }
+
             model.addAttribute("employee",employee);
             return "rapport";
         }catch(Exception e){

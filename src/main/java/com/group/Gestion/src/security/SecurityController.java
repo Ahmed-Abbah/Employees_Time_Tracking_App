@@ -27,7 +27,7 @@ public class SecurityController {
     @PostMapping("/register")
     public String registerEmployee(@RequestParam String  email,@RequestParam String  password,@RequestParam String  firstName,@RequestParam String  lastName){
         authenticationService.registerUser(email,password,firstName,lastName);
-        return "redirect:/auth/login";
+        return "redirect:/employee/welcome";
     }
     @Autowired
     public SecurityController(JwtEncoder jwtEncoder,AuthenticationService authenticationService) {

@@ -21,18 +21,30 @@
     <span class="text">AdminHub</span>
   </a>
   <ul class="side-menu top">
+    <li >
+      <a th:href="@{/employee/admin/employeesList}">
+        <i class='bx bxs-user-circle' ></i>
+        <span class="text">Employees</span>
+      </a>
+    </li>
     <li class="active">
-      <a href="#">
-        <i class='bx bxs-dashboard' ></i>
-        <span class="text">Empoyees</span>
+      <a th:href="@{/pdf/generate}">
+        i class='bx bxs-file-export'></i>
+        <span class="text">Export Data</span>
+      </a>
+    </li>
+    <li >
+      <a th:href="@{/auth/register}">
+        <i class='bx bxs-user-plus'></i>
+        <span class="text">Add new employee</span>
       </a>
     </li>
 
   </ul>
   <ul class="side-menu bottom">
     <li>
-      <a href="#" class="logout">
-        <i class='bx bxs-log-out-circle' ></i>
+      <a th:href="@{/auth/logout}" class="logout">
+        <i class='bx bxs-log-out-circle'></i>
         <span class="text">Logout</span>
       </a>
     </li>
