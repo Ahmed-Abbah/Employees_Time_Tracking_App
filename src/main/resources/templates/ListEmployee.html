@@ -22,18 +22,30 @@
   </a>
   <ul class="side-menu top">
     <li class="active">
-      <a href="#">
+      <a th:href="@{/employee/admin/employeesList}">
         <i class='bx bxs-dashboard' ></i>
         <span class="text">Employees</span>
+      </a>
+    </li>
+    <li class="active">
+      <a th:href="@{/pdf/generate}">
+        <i class='bx bxs-dashboard' ></i>
+        <span class="text">Export Data</span>
+      </a>
+    </li>
+    <li class="active">
+      <a th:href="@{/auth/register}">
+        <i class='bx bxs-dashboard' ></i>
+        <span class="text">Add new employee</span>
       </a>
     </li>
 
   </ul>
   <ul class="side-menu bottom">
     <li>
-      <a href="#" class="logout">
+      <a th:href="@{/auth/logout}" class="logout">
         <i class='bx bxs-log-out-circle' ></i>
-        <span class="text">Logout</span>
+        <span class="text" >Logout</span>
       </a>
     </li>
   </ul>
@@ -73,7 +85,7 @@
             <th>Last Name</th>
             <th>Email</th>
             <th>status</th>
-            <th></th>
+            <th>Action</th>
           </tr>
           </thead>
           <tbody>
@@ -84,6 +96,8 @@
             <td th:if="${employee.isStatusEnTravail()}"><span class="status completed">working ... </span></td>
             <td th:if="${employee.isStatusEnPause()}"><span class="status process">In a Break</span></td>
             <td th:if="${employee.isStatusDehors()}"><span class="status pending">Outside</span></td>
+            <td><a th:href="'/employee/admin/rapport?id='+${employee.getId()}">details</a></td>
+
           </tr>
           </tbody>
         </table>

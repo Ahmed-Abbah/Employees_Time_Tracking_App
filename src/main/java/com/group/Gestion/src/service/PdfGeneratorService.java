@@ -35,6 +35,7 @@ public class PdfGeneratorService {
     public void generateEmployeeReports(HttpServletResponse response) throws IOException {
         List<Employee> employees = employeeRepository.findAll();
 
+
         Document document = new Document(PageSize.A4);
         Paragraph title = new Paragraph("Weekly Reports for All Employees", new Font(FontFactory.getFont(FontFactory.HELVETICA).HELVETICA, 18, Font.BOLD));
         title.setAlignment(Element.ALIGN_CENTER);
