@@ -150,7 +150,13 @@ public class Employee implements UserDetails {
         return null;
     }
 
+    public String getEmail() {
+        return this.email;
+    }
 
+    public String getFirstName() {
+        return this.firstName;
+    }
 
 
 

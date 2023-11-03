@@ -23,19 +23,19 @@
   <ul class="side-menu top">
     <li class="active">
       <a th:href="@{/employee/admin/employeesList}">
-        <i class='bx bxs-dashboard' ></i>
+        <i class='bx bxs-user-circle' ></i>
         <span class="text">Employees</span>
       </a>
     </li>
-    <li class="active">
+    <li >
       <a th:href="@{/pdf/generate}">
-        <i class='bx bxs-dashboard' ></i>
+        <i class='bx bxs-file-export'></i>
         <span class="text">Export Data</span>
       </a>
     </li>
-    <li class="active">
+    <li >
       <a th:href="@{/auth/register}">
-        <i class='bx bxs-dashboard' ></i>
+        <i class='bx bxs-user-plus'></i>
         <span class="text">Add new employee</span>
       </a>
     </li>
@@ -96,7 +96,7 @@
             <td th:if="${employee.isStatusEnTravail()}"><span class="status completed">working ... </span></td>
             <td th:if="${employee.isStatusEnPause()}"><span class="status process">In a Break</span></td>
             <td th:if="${employee.isStatusDehors()}"><span class="status pending">Outside</span></td>
-            <td><a th:href="'/employee/admin/rapport?id='+${employee.getId()}">details</a></td>
+            <td><a th:href="'/employee/admin/rapport?id='+${employee.getId()}"><span class="status details">details</span></a></td>
 
           </tr>
           </tbody>

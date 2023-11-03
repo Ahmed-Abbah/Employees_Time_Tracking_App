@@ -58,6 +58,10 @@ public class EmployeeService implements UserDetailsService{
 //    }
 
 
+        public Employee save(Employee employee) {
+            return employeeRepository.save(employee);
+    }
+
     public List<Employee> getEmployees(){
         return employeeRepository.findAll();
     }

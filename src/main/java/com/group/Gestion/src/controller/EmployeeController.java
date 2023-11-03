@@ -70,6 +70,7 @@ public class EmployeeController {
         Employee employee = employeeService.findEmployeeById(id);
         try{
 
+
             model.addAttribute("employee",employee);
             return "rapport";
         }catch(Exception e){

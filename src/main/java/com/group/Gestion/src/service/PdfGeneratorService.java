@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.awt.*;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -58,6 +59,43 @@ public class PdfGeneratorService {
             e.printStackTrace();
         }
     }
+
+    public ByteArrayOutputStream generateEmployeeReports() throws IOException {
+        List<Employee> employees = employeeRepository.findAll();
+        ByteArrayOutputStream pdfStream = new ByteArrayOutputStream();
+
+        Document document = new Document(PageSize.A4);
+        PdfWriter writer = null;
+        try {
+            writer = PdfWriter.getInstance(document, pdfStream);
+            document.open();
+
+            Paragraph title = new Paragraph("Weekly Reports for All Employees", new Font(FontFactory.getFont(FontFactory.HELVETICA).HELVETICA, 18, Font.BOLD));
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            Paragraph exportInfo = new Paragraph("Exported at: " + DateTimeProvider.getCurrentTime() + " | " + DateTimeProvider.getCurrentDate(),
+                    new Font(FontFactory.getFont(FontFactory.HELVETICA).HELVETICA, 12, Font.ITALIC));
+            exportInfo.setAlignment(Element.ALIGN_CENTER);
+            document.add(exportInfo);
+
+            for (Employee employee : employees) {
+                addEmployeeReportToDocument(document, employee);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (document != null) {
+                document.close();
+            }
+            if (writer != null) {
+                writer.close();
+            }
+        }
+
+        return pdfStream;
+    }
+
 
     private void addEmployeeReportToDocument(Document document, Employee employee) throws DocumentException {
         Paragraph employeeName = new Paragraph("Weekly Report for Employee: " + employee.getFirstName() + " " + employee.getLastName(),
