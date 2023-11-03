@@ -359,9 +359,15 @@ body {
 
 
 
+/*#content main .box-info {*/
+/*    display: grid;*/
+/*    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));*/
+/*    grid-gap: 24px;*/
+/*    margin-top: 36px;*/
+/*}*/
 #content main .box-info {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(4, 1fr); /* Set 4 columns */
     grid-gap: 24px;
     margin-top: 36px;
 }
@@ -373,6 +379,8 @@ body {
     align-items: center;
     grid-gap: 24px;
 }
+
+
 #content main .box-info li .bx {
     width: 80px;
     height: 80px;
@@ -393,6 +401,10 @@ body {
 #content main .box-info li:nth-child(3) .bx {
     background: var(--light-orange);
     color: var(--orange);
+}
+#content main .box-info li:nth-child(4) .bx {
+    background: rgba(115, 215, 185, 0.82);
+    color: #32be8f ;
 }
 #content main .box-info li .text h3 {
     font-size: 24px;

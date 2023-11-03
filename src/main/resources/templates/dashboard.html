@@ -76,24 +76,32 @@
             <li>
                 <i class='bx bxs-group'></i>
                 <span class="text">
-                    <h3 th:text="${totalEmployeeCount}"></h3>
+                    <h3 th:text="${totalEmployeeCount - 1}"></h3>
                     <p>Employees</p>
                 </span>
             </li>
             <li>
                 <i class='bx bxs-group'></i>
                 <span class="text">
-                    <h3>2834</h3>
-                    <p>Visitors</p>
+                    <h3 th:text="${workingEmployeeCount - 1}"></h3>
+                    <p>Working</p>
                 </span>
             </li>
             <li>
-                <i class='bx bxs-dollar-circle'></i>
+                <i class='bx bxs-group'></i>
                 <span class="text">
-                    <h3>$2543</h3>
-                    <p>Total Sales</p>
+                    <h3 th:text="${inBreakEmployeeCount}"></h3>
+                    <p>inBreak</p>
                 </span>
             </li>
+            <li>
+                <i class='bx bxs-group'></i>
+                <span class="text">
+                    <h3 th:text="${outsideEmployeeCount}"></h3>
+                    <p>outdide</p>
+                </span>
+            </li>
+
         </ul>
 
         <div class="chart">
@@ -114,8 +122,31 @@
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <script th:inline="javascript">
                     var ratingStatistics = /*[[${ratingStatistics}]]*/;
-                    var labels = Object.keys(ratingStatistics);
+                    var labels = Object.keys(ratingStatistics).map(function(key) {
+                        switch (key) {
+                            case "Rating 1":
+                                return "Very Bad";
+                            case "Rating 2":
+                                return "Bad";
+                            case "Rating 3":
+                                return "Average";
+                            case "Rating 4":
+                                return "Good";
+                            case "Rating 5":
+                                return "Excellent";
+                            default:
+                                return key; // Use the original label if not matched
+                        }
+                    });
                     var data = Object.values(ratingStatistics);
+
+                    var colors = [
+                        'rgba(255, 99, 132, 0.2)',   // Very Bad
+                        'rgba(255, 159, 64, 0.2)',   // Bad
+                        'rgba(255, 205, 86, 0.2)',   // Average
+                        'rgba(75, 192, 192, 0.2)',  // Good
+                        'rgba(54, 162, 235, 0.2)',  // Excellent
+                    ];
 
                     var ctx = document.getElementById('ratingChart').getContext('2d');
                     var myChart = new Chart(ctx, {
@@ -125,7 +156,7 @@
                             datasets: [{
                                 label: 'Rating Statistics',
                                 data: data,
-                                backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                                backgroundColor:  colors,
                                 borderColor: 'rgba(75, 192, 192, 1)',
                                 borderWidth: 1
                             }]
