@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -64,6 +65,11 @@ public class SpringEmailApplication {
         }
     }
 
+
+
+
+
+
     public ByteArrayOutputStream generatePdf() throws IOException {
         ByteArrayOutputStream pdfStream = this.pdfGeneratorService.generateEmployeeReports();
         return pdfStream;
@@ -78,3 +84,7 @@ public class SpringEmailApplication {
         emailService.sendEmailToAdminWithAttachment(subject, body, pdfStream, "rapport.pdf");
     }
 }
+
+
+
+

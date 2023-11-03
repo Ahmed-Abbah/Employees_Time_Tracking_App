@@ -22,6 +22,12 @@
   </a>
   <ul class="side-menu top">
     <li >
+      <a th:href="@{/admin/dashboard}">
+        <i class='bx bxs-dashboard'></i>
+        <span class="text">Dashboard</span>
+      </a>
+    </li>
+    <li >
       <a th:href="@{/employee/admin/employeesList}">
         <i class='bx bxs-user-circle' ></i>
         <span class="text">Employees</span>
@@ -29,7 +35,7 @@
     </li>
     <li class="active">
       <a th:href="@{/pdf/generate}">
-        i class='bx bxs-file-export'></i>
+        <i class='bx bxs-file-export'></i>
         <span class="text">Export Data</span>
       </a>
     </li>
