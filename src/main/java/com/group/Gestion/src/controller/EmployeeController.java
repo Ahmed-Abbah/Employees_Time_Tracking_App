@@ -70,9 +70,6 @@ public class EmployeeController {
         Employee employee = employeeService.findEmployeeById(id);
         try{
 
-//                    while(employee.getWorkDays().size()>8){
-//
-//            }
 
             model.addAttribute("employee",employee);
             return "rapport";
