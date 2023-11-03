@@ -69,6 +69,7 @@ public class EmployeeController {
     public  String rapportEmployee(@RequestParam("id") long id,Model model){
         Employee employee = employeeService.findEmployeeById(id);
         try{
+
             model.addAttribute("employee",employee);
             return "rapport";
         }catch(Exception e){
@@ -76,7 +77,5 @@ public class EmployeeController {
         }
         return "rapport";
     }
-
-
 
 }
