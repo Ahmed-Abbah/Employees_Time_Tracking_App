@@ -12,4 +12,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback,Long> {
 
     // Méthode pour rechercher les feedbacks par date et ID de l'employé
     List<Feedback> findByDateAndIdEmploye(LocalDate date, Long idEmploye);
+
+    List<Feedback> findByDate(LocalDate date);
+    long count();
 }
