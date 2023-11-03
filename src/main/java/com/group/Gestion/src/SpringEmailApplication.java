@@ -35,7 +35,7 @@ public class SpringEmailApplication {
         SpringApplication.run(SpringEmailApplication.class, args);
     }
 
-    @Scheduled(cron = "0 07 19 * * ?")
+    @Scheduled(cron = "0 22 20 * * ?")
     public void sendMail() {
         List<Employee> employees = employeeRepository.findAll();
         String subject = "Formulaire de Feedback";
@@ -50,7 +50,7 @@ public class SpringEmailApplication {
                 }
             }
 
-            String feedbackFormUrl = baseUrl + "/feedback";
+            String feedbackFormUrl = baseUrl + "/employee/feedback";
 
             String body = "Cher " + employee.getFirstName() + ",\n\n";
             body += "Veuillez cliquer sur le lien ci-dessous pour accéder au formulaire de feedback :\n";
