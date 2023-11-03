@@ -12,23 +12,27 @@
     <div class="text">Thanks for rating us!</div>
     <div class="edit"></div>
   </div>
-  <form action="#">
+
+  <form action="/submit-feedback" method="post">
     <div class="star-widget">
-      <input type="radio" name="rate" id="rate-5">
+      <input type="radio" name="rate" value="Fantastic" id="rate-5">
       <label for="rate-5" class="fas fa-star"></label>
-      <input type="radio" name="rate" id="rate-4">
+      <input type="radio" name="rate" value="Excellent" id="rate-4">
       <label for="rate-4" class="fas fa-star"></label>
-      <input type="radio" name="rate" id="rate-3">
+      <input type="radio" name="rate" value="Good" id="rate-3">
       <label for="rate-3" class="fas fa-star"></label>
-      <input type="radio" name="rate" id="rate-2">
+      <input type="radio" name="rate" value="Not so good" id="rate-2">
       <label for="rate-2" class="fas fa-star"></label>
-      <input type="radio" name="rate" id="rate-1">
+      <input type="radio" name="rate" value="Terrible" id="rate-1">
       <label for="rate-1" class="fas fa-star"></label>
-      <div class="form" action="#">
+
+      <div class="form">
         <header></header>
         <div class="textarea">
-          <textarea cols="30" placeholder="Describe your experience.."></textarea>
+          <textarea id="value" name="value" cols="30" placeholder="Describe your experience.."></textarea>
         </div>
+
+
         <div class="btn">
           <button type="submit">Post</button>
         </div>

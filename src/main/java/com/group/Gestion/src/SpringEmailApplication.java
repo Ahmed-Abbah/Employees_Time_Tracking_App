@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @SpringBootApplication
@@ -27,12 +29,23 @@ public class SpringEmailApplication {
         SpringApplication.run(SpringEmailApplication.class, args);
     }
 
-    @Scheduled(cron = "0 24 11 * * ?") // Planifiez l'exécution à 13:55 tous les jours
+    @Scheduled(cron = "0 16 18 * * ?") // Planifiez l'envoi à 13:44 tous les jours
     public void sendMail() {
         List<Employee> employees = employeeRepository.findAll();
         String subject = "Formulaire de Feedback";
 
         for (Employee employee : employees) {
+            // Vérifiez si l'employé a déjà ouvert le lien aujourd'hui
+            if (employee.getLastEmailSent() != null) {
+                LocalTime lastEmailSentTime = employee.getLastEmailSent().toLocalTime();
+                LocalTime currentTime = LocalTime.now();
+                if (currentTime.isAfter(LocalTime.of(18, 12)) && currentTime.isBefore(LocalTime.of(18, 11)) &&
+                        lastEmailSentTime.isAfter(LocalTime.of(18, 12)) && lastEmailSentTime.isBefore(LocalTime.of(18, 11))) {
+                    // Le lien a déjà été ouvert après 13:44, donc le lien est expiré
+                    continue;
+                }
+            }
+
             String feedbackFormUrl = baseUrl + "/feedback";
 
             String body = "Cher " + employee.getFirstName() + ",\n\n";
@@ -41,6 +54,10 @@ public class SpringEmailApplication {
             body += "Cordialement,\nVotre entreprise";
 
             emailService.sendEmailToEmployee(employee, subject, body);
+
+            // Mettez à jour l'heure de l'envoi de l'e-mail
+            employee.setLastEmailSent(LocalDateTime.now());
+            employeeRepository.save(employee);
         }
     }
 }

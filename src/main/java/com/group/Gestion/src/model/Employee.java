@@ -8,6 +8,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +41,9 @@ public class Employee implements UserDetails {
     private String role;
 
     private Status status=Status.DEHORS;
+
+    private LocalDateTime lastEmailSent;
+    private boolean feedbackLinkExpired;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -158,18 +164,27 @@ public class Employee implements UserDetails {
         return this.firstName;
     }
 
+    public void setFeedbackLinkExpired(boolean feedbackLinkExpired) {
+        this.feedbackLinkExpired = feedbackLinkExpired;
+    }
+    public OffsetDateTime getLastEmailSent() {
+        if (lastEmailSent != null) {
+            return OffsetDateTime.of(lastEmailSent, ZoneOffset.UTC); // Ajoutez la zone horaire appropriée
+        }
+        return null;
+    }
+
+    public void setLastEmailSent(LocalDateTime now) {
+        this.lastEmailSent = now;
+    }
 
 
+/*
+    public void setLastEmailSent(LocalDateTime lastEmailSent) {
+        this.lastEmailSent = lastEmailSent;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
+    public void setFeedbackLinkExpired(boolean feedbackLinkExpired) {
+        this.feedbackLinkExpired = feedbackLinkExpired;
+    }*/
 }

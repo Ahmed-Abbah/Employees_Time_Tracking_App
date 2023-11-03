@@ -23,12 +23,17 @@ public class Feedback {
     private long id;
     private long idEmploye;
 
+
     private LocalDate date;
 
     private String value;
+    private String rate;
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+    public void setRate(String rate) {
+        this.rate = rate;
     }
 
     public void setValue(String value) {
