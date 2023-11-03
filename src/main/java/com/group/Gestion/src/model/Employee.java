@@ -178,6 +178,11 @@ public class Employee implements UserDetails {
         this.lastEmailSent = now;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+
 
 /*
     public void setLastEmailSent(LocalDateTime lastEmailSent) {

@@ -1,14 +1,17 @@
 package com.group.Gestion.src.controller;
 
+import com.group.Gestion.src.model.Employee;
 import com.group.Gestion.src.model.Feedback;
 import com.group.Gestion.src.repository.FeedbackRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import com.group.Gestion.src.security.SecurityController;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,47 +21,41 @@ public class FeedbackController {
     @Autowired
     private FeedbackRepository feedbackRepository;
 
-    @GetMapping("/feedback-submitted")
-    public ModelAndView feedbacksubmitted() {
+    @GetMapping("/employee/feedback-submitted")
+    public ModelAndView feedbackSubmitted() {
         return new ModelAndView("submitfeedback");
     }
 
-    @GetMapping("/feedback")
-    public ModelAndView showFeedbackForm(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        long idEmploye = 1; // Vous devez stocker l'ID de l'employé en session
+    @GetMapping("/employee/feedback")
+    public String showFeedbackForm() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (idEmploye == 0) {
-            return new ModelAndView("redirect:/"); // Redirigez vers la page de connexion appropriée
+        if (authentication.getPrincipal() instanceof Employee) {
+            return "/employee/feedback"; // Afficher la page de formulaire
+        } else {
+            return "redirect:/"; // Rediriger vers la page de login
         }
-
-        LocalDate currentDate = LocalDate.now();
-        List<Feedback> feedbacks = feedbackRepository.findByDateAndIdEmploye(currentDate, idEmploye);
-
-        if (!feedbacks.isEmpty()) {
-            ModelAndView modelAndView = new ModelAndView("submitfeedback");
-            modelAndView.addObject("message", "Vous avez déjà rempli le formulaire pour aujourd'hui.");
-            return modelAndView;
-        }
-
-        ModelAndView modelAndView = new ModelAndView("feedback");
-        modelAndView.addObject("currentDate", currentDate);
-        return modelAndView;
     }
 
-    @PostMapping("/submit-feedback")
-    public String submitFeedback(String value, String rate, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        long idEmploye = 1; // Vous devez stocker l'ID de l'employé en session
+    @PostMapping("/employee/submit-feedback")
+    public String submitFeedback(String value, String rate,HttpSession http) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Feedback feedback = new Feedback();
-        feedback.setDate(LocalDate.now());
-        feedback.setValue(value);
-        feedback.setRate(rate);
-        feedback.setIdEmploye(idEmploye);
+        if (SecurityController.isUserAuthenticated(http)) {
+            Employee employee = (Employee) http.getAttribute("loggedInEmployee");
+            Long idEmploye = employee.getId(); // Supposons que votre classe Employee a une méthode pour obtenir l'ID de l'employé.
 
-        feedbackRepository.save(feedback);
+            Feedback feedback = new Feedback();
+            feedback.setDate(LocalDate.now());
+            feedback.setValue(value);
+            feedback.setRate(rate);
+            feedback.setIdEmploye(idEmploye);
 
-        return "redirect:/feedback-submitted";
+            feedbackRepository.save(feedback);
+
+            return "redirect:/employee/feedback-submitted"; // Rediriger vers la page de confirmation
+        } else {
+            return "redirect:/"; // Rediriger vers la page de login
+        }
     }
 }
