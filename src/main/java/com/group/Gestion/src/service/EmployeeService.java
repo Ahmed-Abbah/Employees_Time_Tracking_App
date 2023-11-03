@@ -57,7 +57,9 @@ public class EmployeeService implements UserDetailsService{
 //        return employee.map(Employee::new).orElseThrow(()->new UsernameNotFoundException("Email or password is Incorrect ."));
 //    }
 
-
+    public long getTotalEmployeeCount() {
+        return employeeRepository.count();
+    }
         public Employee save(Employee employee) {
             return employeeRepository.save(employee);
     }

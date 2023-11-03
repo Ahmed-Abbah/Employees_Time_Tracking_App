@@ -11,13 +11,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-<<<<<<< HEAD
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-=======
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
->>>>>>> 09d8668363853c0cb65c481a1a0fe618e82df2d2
+
 import java.util.List;
 
 @SpringBootApplication
@@ -68,9 +68,9 @@ public class SpringEmailApplication {
             employeeRepository.save(employee);
         }
     }
-<<<<<<< HEAD
-}
-=======
+
+
+
 
 
     public ByteArrayOutputStream generatePdf() throws IOException {
@@ -92,4 +92,5 @@ public class SpringEmailApplication {
     }
 
 }
->>>>>>> 09d8668363853c0cb65c481a1a0fe618e82df2d2
+
+
