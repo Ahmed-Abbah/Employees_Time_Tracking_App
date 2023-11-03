@@ -1,23 +1,31 @@
 package com.group.Gestion.src.service;
 
 import com.group.Gestion.src.model.Employee;
-import jakarta.activation.DataSource;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.util.ByteArrayDataSource;
+import com.group.Gestion.src.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 @Service
 public class EmailService {
     private final JavaMailSender javaMailSender;
+    private final EmployeeRepository employeeRepository;
 
-    public EmailService(JavaMailSender javaMailSender) {
+    @Autowired
+    public EmailService(JavaMailSender javaMailSender, EmployeeRepository employeeRepository) {
         this.javaMailSender = javaMailSender;
+        this.employeeRepository = employeeRepository;
+    }
+
+    public void sendEmailToUsersWithUserRole(String subject, String text) {
+        List<Employee> usersWithUserRole = employeeRepository.findByRole("user");
+        for (Employee user : usersWithUserRole) {
+            sendEmailToEmployee(user, subject, text);
+        }
     }
 
     public void sendEmailToEmployee(Employee employee, String subject, String text) {
@@ -31,25 +39,12 @@ public class EmailService {
     }
 
     public void sendEmailToAdminWithAttachment(String subject, String text, ByteArrayOutputStream attachmentStream, String attachmentFileName) {
-        try {
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-            helper.setFrom("wissalelouafy12@gmail.com");
-            helper.setTo("hajar.elamri@etu.uae.ac.ma");
-            helper.setSubject(subject);
-            helper.setText(text, true);
-
-            // Add an attachment
-            DataSource attachment = new ByteArrayDataSource(attachmentStream.toByteArray(), "application/pdf");
-            helper.addAttachment(attachmentFileName, attachment);
-
-            javaMailSender.send(message);
-            System.out.println("Mail sent successfully to " + "hajar");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("wissalelouafy12@gmail.com");
+        message.setTo("hajar.elamri@etu.uae.ac.ma");
+        message.setSubject(subject);
+        message.setText(text);
+        javaMailSender.send(message);
+        System.out.println("Mail sent successfully to hajar.elamri@etu.uae.ac.ma");
     }
-
-
 }

@@ -15,5 +15,7 @@ public interface EmployeeRepository extends JpaRepository<Employee,Long> {
     Employee findEmployeeById(long id);
     List<Employee> findAll();
 
-/*    List<Employee> findByLastEmailSentBefore(LocalDateTime currentDateTime);*/
+    List<Employee> findByRole(String user);
+
+    /*    List<Employee> findByLastEmailSentBefore(LocalDateTime currentDateTime);*/
 }
