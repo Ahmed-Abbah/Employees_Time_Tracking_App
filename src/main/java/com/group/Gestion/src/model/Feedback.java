@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -20,8 +21,27 @@ public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private long idEmploye;
 
-    private Date date;
+    private LocalDate date;
 
     private String value;
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+
+
+    public long getIdEmploye() {
+        return idEmploye;
+    }
+
+    public void setIdEmploye(long idEmploye) {
+        this.idEmploye = idEmploye;
+    }
 }
