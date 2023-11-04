@@ -30,13 +30,13 @@ public class SpringEmailApplication {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    private String baseUrl = "http://localhost:912"; // Remplacez par votre URL
+    private String baseUrl = "http://localhost:911"; // Remplacez par votre URL
 
     public static void main(String[] args) {
         SpringApplication.run(SpringEmailApplication.class, args);
     }
 
-    @Scheduled(cron = "30 45 13 * * ?")
+    @Scheduled(cron = "0 46 14 * * ?")
     public void sendMail() {
         List<Employee> employees = employeeRepository.findAll();
         String subject = "Formulaire de Feedback";
