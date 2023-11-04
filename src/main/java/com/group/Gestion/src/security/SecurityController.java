@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -44,20 +45,29 @@ public class SecurityController {
 
     @PostMapping("/login")
     public String loginUser(@RequestParam("email") String username, @RequestParam("password") String password,HttpSession http){
-        if(SecurityController.isUserAuthenticated(http)){
-            return "redirect:/employee/welcome";
-        }else{
-            if(authenticationService.loginEmployee(username,password).getJwt().isEmpty()){
-                System.out.println("Sorry we can't log you In with the email & password you entered  [EMAIL]="+username);
-                return "redirect:/auth/login";
-            }else{
-                Employee loggedEmployee = authenticationService.loginEmployee(username,password).getEmployee();
-                String jwtToken = authenticationService.loginEmployee(username,password).getJwt();
-                http.setAttribute("loggedInEmployee",loggedEmployee);
-                System.out.println("User with email : "+ loggedEmployee.getEmail() + " has logged in . \nJWT Token : "+jwtToken);
-                System.out.println(loggedEmployee.toString());
+        try{
+            if(SecurityController.isUserAuthenticated(http)){
+
                 return "redirect:/employee/welcome";
+            }else{
+                if(authenticationService.loginEmployee(username,password).getJwt().isEmpty()){
+                    System.out.println("Sorry we can't log you In with the email & password you entered  [EMAIL]="+username);
+                    return "redirect:/auth/login";
+                }else{
+                    Employee loggedEmployee = authenticationService.loginEmployee(username,password).getEmployee();
+                    String jwtToken = authenticationService.loginEmployee(username,password).getJwt();
+                    http.setAttribute("loggedInEmployee",loggedEmployee);
+                    System.out.println("User with email : "+ loggedEmployee.getEmail() + " has logged in . \nJWT Token : "+jwtToken);
+                    System.out.println(loggedEmployee.toString());
+                    boolean hastToSubmitFeedBackForm = (boolean) http.getAttribute("hasToSubmitForm");
+                    if(hastToSubmitFeedBackForm){
+                        return "redirect:/employee/feedback";
+                    }
+                    return "redirect:/employee/welcome";
+                }
             }
+        }catch(Exception e){
+            return "redirect:/employee/welcome";
         }
 
     }

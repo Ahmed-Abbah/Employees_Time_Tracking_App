@@ -22,17 +22,18 @@ public class FeedbackController {
     private FeedbackRepository feedbackRepository;
 
     @GetMapping("/employee/feedback-submitted")
-    public ModelAndView feedbackSubmitted() {
-        return new ModelAndView("submitfeedback");
+    public ModelAndView feedbackSubmitted(HttpSession http) {
+        http.invalidate();
+        return
+                new ModelAndView("submitfeedback");
     }
 
     @GetMapping("/employee/feedback")
-    public String showFeedbackForm() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication.getPrincipal() instanceof Employee) {
-            return "/employee/feedback"; // Afficher la page de formulaire
+    public String showFeedbackForm(HttpSession http) {
+        if (SecurityController.isUserAuthenticated(http)) {
+            return "feedback"; // Afficher la page de formulaire
         } else {
+            http.setAttribute("hasToSubmitForm",true);
             return "redirect:/"; // Rediriger vers la page de login
         }
     }
@@ -55,6 +56,7 @@ public class FeedbackController {
 
             return "redirect:/employee/feedback-submitted"; // Rediriger vers la page de confirmation
         } else {
+            http.setAttribute("hasToSubmitForm",true);
             return "redirect:/"; // Rediriger vers la page de login
         }
     }

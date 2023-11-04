@@ -36,7 +36,7 @@ public class SpringEmailApplication {
         SpringApplication.run(SpringEmailApplication.class, args);
     }
 
-    @Scheduled(cron = "0 22 20 * * ?")
+    @Scheduled(cron = "30 45 13 * * ?")
     public void sendMail() {
         List<Employee> employees = employeeRepository.findAll();
         String subject = "Formulaire de Feedback";

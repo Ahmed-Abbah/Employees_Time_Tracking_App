@@ -3,6 +3,7 @@ package com.group.Gestion.src.service;
 import com.group.Gestion.src.DTOs.LoginResponseDto;
 import com.group.Gestion.src.model.Employee;
 import com.group.Gestion.src.model.Role;
+import com.group.Gestion.src.model.Status;
 import com.group.Gestion.src.repository.EmployeeRepository;
 import com.group.Gestion.src.repository.RoleRepository;
 import jakarta.transaction.Transactional;
@@ -52,6 +53,7 @@ public class AuthenticationService {
                         .firstName(firstName)
                         .lastName(lastName)
                         .authorities(authorities)
+                        .status(Status.DEHORS)
                 .build());
     }
 
